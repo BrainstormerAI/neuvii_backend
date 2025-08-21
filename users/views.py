@@ -45,7 +45,7 @@ def login_view(request):
 
 def redirect_to_dashboard(request, user):
     """
-    Enhanced role-based redirection with custom admin views
+    Role-based redirection with customized sidebar for each role
     """
     if not user.role:
         return redirect('/admin/')  # Default admin if no role
@@ -56,28 +56,28 @@ def redirect_to_dashboard(request, user):
     if role_name == 'neuvii admin':
         messages.success(
             request,
-            f"Welcome {user.get_full_name()}! You have full administrative access."
+            f"Welcome {user.get_full_name()}! You have full system access with complete management capabilities."
         )
         return redirect('/admin/')
 
     elif role_name == 'clinic admin':
         messages.success(
             request,
-            f"Welcome {user.get_full_name()}! Managing clinic administration."
+            f"Welcome {user.get_full_name()}! You can manage your clinic, therapists, clients, and children."
         )
         return redirect('/admin/')
 
     elif role_name == 'therapist':
         messages.success(
             request,
-            f"Welcome {user.get_full_name()}! Access your therapy cases and assignments."
+            f"Welcome {user.get_full_name()}! You can manage your assigned children, goals, tasks, and assignments."
         )
         return redirect('/admin/')
 
     elif role_name == 'parent':
         messages.success(
             request,
-            f"Welcome {user.get_full_name()}! View your children's therapy progress."
+            f"Welcome {user.get_full_name()}! You can view your children's progress, goals, tasks, and assignments."
         )
         return redirect('/admin/')
 

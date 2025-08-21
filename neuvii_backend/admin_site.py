@@ -32,7 +32,7 @@ class NeuviiAdminSite(AdminSite):
         elif role_name == 'therapist':
             return self.get_therapist_apps(app_list, request)
         elif role_name == 'parent':
-            return self.get_parent_apps(app_list, request)
+            return self.get_client_apps(app_list, request)
 
         return app_list
 
@@ -40,114 +40,73 @@ class NeuviiAdminSite(AdminSite):
         """Full access for Neuvii Admin with properly structured sidebar"""
         custom_apps = []
 
-        # User Management Section
-        user_models = []
-        auth_models = []
-        for app in app_list:
-            if app['app_label'] == 'users':
-                for model in app['models']:
-                    if model['object_name'] in ['User', 'Role']:
-                        # Ensure full permissions for Neuvii Admin
-                        model['perms'] = {
-                            'add': True,
-                            'change': True,
-                            'delete': True,
-                            'view': True
-                        }
-                        user_models.append(model)
-            elif app['app_label'] == 'auth':
-                for model in app['models']:
-                    if model['object_name'] == 'Group':
-                        model['perms'] = {
-                            'add': True,
-                            'change': True,
-                            'delete': True,
-                            'view': True
-                        }
-                        auth_models.append(model)
-
-        if user_models or auth_models:
-            custom_apps.append({
-                'name': 'User Management',
-                'app_label': 'users',
-                'app_url': reverse('admin:app_list', kwargs={'app_label': 'users'}),
-                'has_module_perms': True,
-                'models': user_models + auth_models
-            })
-
         # Clinic Management Section
         clinic_models = []
         for app in app_list:
             if app['app_label'] == 'clinic':
                 for model in app['models']:
                     if model['object_name'] == 'Clinic':
-                        # Ensure full permissions for Neuvii Admin
                         model['perms'] = {
                             'add': True,
                             'change': True,
                             'delete': True,
                             'view': True
                         }
-                        # Rename for sidebar display
-                        model['name'] = 'Clinic'
+                        model['name'] = 'Clinics'
                         clinic_models.append(model)
 
         if clinic_models:
             custom_apps.append({
                 'name': 'Clinic Management',
-                'app_label': 'clinic',
+                'app_label': 'clinic_management',
                 'app_url': reverse('admin:app_list', kwargs={'app_label': 'clinic'}),
                 'has_module_perms': True,
                 'models': clinic_models
             })
 
-        # Therapy Management Section (Therapists)
+        # Therapy Management Section
         therapy_models = []
         for app in app_list:
             if app['app_label'] == 'therapy':
                 for model in app['models']:
                     if model['object_name'] == 'TherapistProfile':
-                        # Ensure full permissions for Neuvii Admin
                         model['perms'] = {
                             'add': True,
                             'change': True,
                             'delete': True,
                             'view': True
                         }
-                        # Rename for sidebar display
-                        model['name'] = 'Therapist'
+                        model['name'] = 'Therapies'
                         therapy_models.append(model)
 
         if therapy_models:
             custom_apps.append({
                 'name': 'Therapy Management',
-                'app_label': 'therapy_therapists',
+                'app_label': 'therapy_management',
                 'app_url': reverse('admin:app_list', kwargs={'app_label': 'therapy'}),
                 'has_module_perms': True,
                 'models': therapy_models
             })
 
-        # Client Management Section (Parents)
+        # Client Management Section
         client_models = []
         for app in app_list:
             if app['app_label'] == 'therapy':
                 for model in app['models']:
                     if model['object_name'] == 'ParentProfile':
-                        # Ensure full permissions for Neuvii Admin
                         model['perms'] = {
                             'add': True,
                             'change': True,
                             'delete': True,
                             'view': True
                         }
-                        # Rename for sidebar display
                         model['name'] = 'Clients'
                         client_models.append(model)
 
         if client_models:
             custom_apps.append({
                 'name': 'Client Management',
-                'app_label': 'therapy_clients',
+                'app_label': 'client_management',
                 'app_url': reverse('admin:app_list', kwargs={'app_label': 'therapy'}),
                 'has_module_perms': True,
                 'models': client_models
@@ -159,21 +118,19 @@ class NeuviiAdminSite(AdminSite):
             if app['app_label'] == 'therapy':
                 for model in app['models']:
                     if model['object_name'] == 'Child':
-                        # Ensure full permissions for Neuvii Admin
                         model['perms'] = {
                             'add': True,
                             'change': True,
                             'delete': True,
                             'view': True
                         }
-                        # Rename for sidebar display
-                        model['name'] = 'Child'
+                        model['name'] = 'Children'
                         child_models.append(model)
 
         if child_models:
             custom_apps.append({
                 'name': 'Child Management',
-                'app_label': 'therapy_children',
+                'app_label': 'child_management',
                 'app_url': reverse('admin:app_list', kwargs={'app_label': 'therapy'}),
                 'has_module_perms': True,
                 'models': child_models
@@ -185,21 +142,19 @@ class NeuviiAdminSite(AdminSite):
             if app['app_label'] == 'therapy':
                 for model in app['models']:
                     if model['object_name'] == 'Assignment':
-                        # Ensure full permissions for Neuvii Admin
                         model['perms'] = {
                             'add': True,
                             'change': True,
                             'delete': True,
                             'view': True
                         }
-                        # Rename for sidebar display
-                        model['name'] = 'Assignment'
+                        model['name'] = 'Assignments'
                         assignment_models.append(model)
 
         if assignment_models:
             custom_apps.append({
                 'name': 'Assignment Management',
-                'app_label': 'therapy_assignments',
+                'app_label': 'assignment_management',
                 'app_url': reverse('admin:app_list', kwargs={'app_label': 'therapy'}),
                 'has_module_perms': True,
                 'models': assignment_models
@@ -211,21 +166,19 @@ class NeuviiAdminSite(AdminSite):
             if app['app_label'] == 'therapy':
                 for model in app['models']:
                     if model['object_name'] == 'Goal':
-                        # Ensure full permissions for Neuvii Admin
                         model['perms'] = {
                             'add': True,
                             'change': True,
                             'delete': True,
                             'view': True
                         }
-                        # Rename for sidebar display
                         model['name'] = 'Goals'
                         goal_models.append(model)
 
         if goal_models:
             custom_apps.append({
                 'name': 'Goal Management',
-                'app_label': 'therapy_goals',
+                'app_label': 'goal_management',
                 'app_url': reverse('admin:app_list', kwargs={'app_label': 'therapy'}),
                 'has_module_perms': True,
                 'models': goal_models
@@ -237,45 +190,36 @@ class NeuviiAdminSite(AdminSite):
             if app['app_label'] == 'therapy':
                 for model in app['models']:
                     if model['object_name'] == 'Task':
-                        # Ensure full permissions for Neuvii Admin
                         model['perms'] = {
                             'add': True,
                             'change': True,
                             'delete': True,
                             'view': True
                         }
-                        # Rename for sidebar display
                         model['name'] = 'Tasks'
                         task_models.append(model)
 
         if task_models:
             custom_apps.append({
                 'name': 'Task Management',
-                'app_label': 'therapy_tasks',
+                'app_label': 'task_management',
                 'app_url': reverse('admin:app_list', kwargs={'app_label': 'therapy'}),
                 'has_module_perms': True,
                 'models': task_models
             })
 
-        # Filter out empty apps
         return [app for app in custom_apps if app.get('models')]
 
     def get_clinic_admin_apps(self, app_list, request):
-        """Restricted access for Clinic Admin"""
+        """Restricted access for Clinic Admin - NO Assignment, Goal, or Task sections"""
         allowed_apps = []
 
-        # Get the clinic admin's clinic
-        clinic = None
-        if hasattr(request.user, 'clinic_admin'):
-            clinic = request.user.clinic_admin
-
-        # My Clinic Section
+        # Clinic Management Section
         clinic_models = []
         for app in app_list:
             if app['app_label'] == 'clinic':
                 for model in app['models']:
                     if model['object_name'] == 'Clinic':
-                        # Customize permissions for clinic admin
                         clinic_model = model.copy()
                         clinic_model['perms'] = {
                             'add': False,
@@ -283,14 +227,13 @@ class NeuviiAdminSite(AdminSite):
                             'delete': False,
                             'view': True
                         }
-                        if clinic:
-                            clinic_model['admin_url'] = reverse('admin:clinic_clinic_change', args=[clinic.id])
+                        clinic_model['name'] = 'My Clinics'
                         clinic_models.append(clinic_model)
 
         if clinic_models:
             allowed_apps.append({
-                'name': 'My Clinic',
-                'app_label': 'clinic',
+                'name': 'Clinic Management',
+                'app_label': 'clinic_management',
                 'app_url': reverse('admin:app_list', kwargs={'app_label': 'clinic'}),
                 'has_module_perms': True,
                 'models': clinic_models
@@ -309,12 +252,13 @@ class NeuviiAdminSite(AdminSite):
                             'delete': False,
                             'view': True
                         }
+                        therapy_model['name'] = 'Therapies'
                         therapy_models.append(therapy_model)
 
         if therapy_models:
             allowed_apps.append({
                 'name': 'Therapy Management',
-                'app_label': 'therapy',
+                'app_label': 'therapy_management',
                 'app_url': reverse('admin:app_list', kwargs={'app_label': 'therapy'}),
                 'has_module_perms': True,
                 'models': therapy_models
@@ -333,52 +277,211 @@ class NeuviiAdminSite(AdminSite):
                             'delete': False,
                             'view': True
                         }
+                        client_model['name'] = 'Clients'
                         client_models.append(client_model)
 
         if client_models:
             allowed_apps.append({
                 'name': 'Client Management',
-                'app_label': 'therapy_clients',
+                'app_label': 'client_management',
                 'app_url': reverse('admin:app_list', kwargs={'app_label': 'therapy'}),
                 'has_module_perms': True,
                 'models': client_models
             })
 
-        return allowed_apps
-
-    def get_therapist_apps(self, app_list, request):
-        """Restricted access for Therapists"""
-        allowed_apps = []
-
-        # My Cases Section
-        case_models = []
-        for app in app_list:
-            if app['app_label'] == 'therapy':
-                for model in app['models']:
-                    if model['object_name'] in ['Child', 'Assignment', 'Goal', 'Task']:
-                        case_models.append(model)
-
-        if case_models:
-            allowed_apps.append({
-                'name': 'My Cases',
-                'app_label': 'therapy',
-                'app_url': reverse('admin:app_list', kwargs={'app_label': 'therapy'}),
-                'has_module_perms': True,
-                'models': case_models
-            })
-
-        return allowed_apps
-
-    def get_parent_apps(self, app_list, request):
-        """Restricted access for Parents"""
-        allowed_apps = []
-
-        # My Children Section
+        # Child Management Section
         child_models = []
         for app in app_list:
             if app['app_label'] == 'therapy':
                 for model in app['models']:
-                    if model['object_name'] in ['Child', 'Assignment']:
+                    if model['object_name'] == 'Child':
+                        child_model = model.copy()
+                        child_model['perms'] = {
+                            'add': True,
+                            'change': True,
+                            'delete': False,
+                            'view': True
+                        }
+                        child_model['name'] = 'Children'
+                        child_models.append(child_model)
+
+        if child_models:
+            allowed_apps.append({
+                'name': 'Child Management',
+                'app_label': 'child_management',
+                'app_url': reverse('admin:app_list', kwargs={'app_label': 'therapy'}),
+                'has_module_perms': True,
+                'models': child_models
+            })
+
+        return allowed_apps
+
+    def get_therapist_apps(self, app_list, request):
+        """Restricted access for Therapists - Profile and assigned children management"""
+        allowed_apps = []
+
+        # Profile Information Section
+        profile_models = []
+        for app in app_list:
+            if app['app_label'] == 'therapy':
+                for model in app['models']:
+                    if model['object_name'] == 'TherapistProfile':
+                        profile_model = model.copy()
+                        profile_model['perms'] = {
+                            'add': False,
+                            'change': True,
+                            'delete': False,
+                            'view': True
+                        }
+                        profile_model['name'] = 'My Profile'
+                        profile_models.append(profile_model)
+
+        if profile_models:
+            allowed_apps.append({
+                'name': 'Profile Information',
+                'app_label': 'profile_info',
+                'app_url': reverse('admin:app_list', kwargs={'app_label': 'therapy'}),
+                'has_module_perms': True,
+                'models': profile_models
+            })
+
+        # Child Management Section
+        child_models = []
+        for app in app_list:
+            if app['app_label'] == 'therapy':
+                for model in app['models']:
+                    if model['object_name'] == 'Child':
+                        child_model = model.copy()
+                        child_model['perms'] = {
+                            'add': False,
+                            'change': True,
+                            'delete': False,
+                            'view': True
+                        }
+                        child_model['name'] = 'My Children'
+                        child_models.append(child_model)
+
+        if child_models:
+            allowed_apps.append({
+                'name': 'Child Management',
+                'app_label': 'child_management',
+                'app_url': reverse('admin:app_list', kwargs={'app_label': 'therapy'}),
+                'has_module_perms': True,
+                'models': child_models
+            })
+
+        # Assignment Management Section
+        assignment_models = []
+        for app in app_list:
+            if app['app_label'] == 'therapy':
+                for model in app['models']:
+                    if model['object_name'] == 'Assignment':
+                        assignment_model = model.copy()
+                        assignment_model['perms'] = {
+                            'add': True,
+                            'change': True,
+                            'delete': False,
+                            'view': True
+                        }
+                        assignment_model['name'] = 'My Assignments'
+                        assignment_models.append(assignment_model)
+
+        if assignment_models:
+            allowed_apps.append({
+                'name': 'Assignment Management',
+                'app_label': 'assignment_management',
+                'app_url': reverse('admin:app_list', kwargs={'app_label': 'therapy'}),
+                'has_module_perms': True,
+                'models': assignment_models
+            })
+
+        # Goal Management Section
+        goal_models = []
+        for app in app_list:
+            if app['app_label'] == 'therapy':
+                for model in app['models']:
+                    if model['object_name'] == 'Goal':
+                        goal_model = model.copy()
+                        goal_model['perms'] = {
+                            'add': True,
+                            'change': True,
+                            'delete': False,
+                            'view': True
+                        }
+                        goal_model['name'] = 'My Goals'
+                        goal_models.append(goal_model)
+
+        if goal_models:
+            allowed_apps.append({
+                'name': 'Goal Management',
+                'app_label': 'goal_management',
+                'app_url': reverse('admin:app_list', kwargs={'app_label': 'therapy'}),
+                'has_module_perms': True,
+                'models': goal_models
+            })
+
+        # Task Management Section
+        task_models = []
+        for app in app_list:
+            if app['app_label'] == 'therapy':
+                for model in app['models']:
+                    if model['object_name'] == 'Task':
+                        task_model = model.copy()
+                        task_model['perms'] = {
+                            'add': True,
+                            'change': True,
+                            'delete': False,
+                            'view': True
+                        }
+                        task_model['name'] = 'My Tasks'
+                        task_models.append(task_model)
+
+        if task_models:
+            allowed_apps.append({
+                'name': 'Task Management',
+                'app_label': 'task_management',
+                'app_url': reverse('admin:app_list', kwargs={'app_label': 'therapy'}),
+                'has_module_perms': True,
+                'models': task_models
+            })
+
+        return allowed_apps
+
+    def get_client_apps(self, app_list, request):
+        """Restricted access for Clients/Parents - Profile and children view-only"""
+        allowed_apps = []
+
+        # Profile Information Section
+        profile_models = []
+        for app in app_list:
+            if app['app_label'] == 'therapy':
+                for model in app['models']:
+                    if model['object_name'] == 'ParentProfile':
+                        profile_model = model.copy()
+                        profile_model['perms'] = {
+                            'add': False,
+                            'change': True,
+                            'delete': False,
+                            'view': True
+                        }
+                        profile_model['name'] = 'My Profile'
+                        profile_models.append(profile_model)
+
+        if profile_models:
+            allowed_apps.append({
+                'name': 'Profile Information',
+                'app_label': 'profile_info',
+                'app_url': reverse('admin:app_list', kwargs={'app_label': 'therapy'}),
+                'has_module_perms': True,
+                'models': profile_models
+            })
+
+        # Child Management Section
+        child_models = []
+        for app in app_list:
+            if app['app_label'] == 'therapy':
+                for model in app['models']:
+                    if model['object_name'] == 'Child':
                         child_model = model.copy()
                         child_model['perms'] = {
                             'add': False,
@@ -386,15 +489,91 @@ class NeuviiAdminSite(AdminSite):
                             'delete': False,
                             'view': True
                         }
+                        child_model['name'] = 'My Children'
                         child_models.append(child_model)
 
         if child_models:
             allowed_apps.append({
-                'name': 'My Children',
-                'app_label': 'therapy',
+                'name': 'Child Management',
+                'app_label': 'child_management',
                 'app_url': reverse('admin:app_list', kwargs={'app_label': 'therapy'}),
                 'has_module_perms': True,
                 'models': child_models
+            })
+
+        # Goal Management Section (View-only)
+        goal_models = []
+        for app in app_list:
+            if app['app_label'] == 'therapy':
+                for model in app['models']:
+                    if model['object_name'] == 'Goal':
+                        goal_model = model.copy()
+                        goal_model['perms'] = {
+                            'add': False,
+                            'change': False,
+                            'delete': False,
+                            'view': True
+                        }
+                        goal_model['name'] = 'Children Goals'
+                        goal_models.append(goal_model)
+
+        if goal_models:
+            allowed_apps.append({
+                'name': 'Goal Management',
+                'app_label': 'goal_management',
+                'app_url': reverse('admin:app_list', kwargs={'app_label': 'therapy'}),
+                'has_module_perms': True,
+                'models': goal_models
+            })
+
+        # Task Management Section (View-only)
+        task_models = []
+        for app in app_list:
+            if app['app_label'] == 'therapy':
+                for model in app['models']:
+                    if model['object_name'] == 'Task':
+                        task_model = model.copy()
+                        task_model['perms'] = {
+                            'add': False,
+                            'change': False,
+                            'delete': False,
+                            'view': True
+                        }
+                        task_model['name'] = 'Children Tasks'
+                        task_models.append(task_model)
+
+        if task_models:
+            allowed_apps.append({
+                'name': 'Task Management',
+                'app_label': 'task_management',
+                'app_url': reverse('admin:app_list', kwargs={'app_label': 'therapy'}),
+                'has_module_perms': True,
+                'models': task_models
+            })
+
+        # Assignment Management Section (View-only)
+        assignment_models = []
+        for app in app_list:
+            if app['app_label'] == 'therapy':
+                for model in app['models']:
+                    if model['object_name'] == 'Assignment':
+                        assignment_model = model.copy()
+                        assignment_model['perms'] = {
+                            'add': False,
+                            'change': False,
+                            'delete': False,
+                            'view': True
+                        }
+                        assignment_model['name'] = 'Children Assignments'
+                        assignment_models.append(assignment_model)
+
+        if assignment_models:
+            allowed_apps.append({
+                'name': 'Assignment Management',
+                'app_label': 'assignment_management',
+                'app_url': reverse('admin:app_list', kwargs={'app_label': 'therapy'}),
+                'has_module_perms': True,
+                'models': assignment_models
             })
 
         return allowed_apps
